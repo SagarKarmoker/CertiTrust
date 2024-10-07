@@ -13,6 +13,16 @@ const initialCredentials = [
     blockchainUrl: "https://blockchain.com/tx/123",
     isPublic: false,
     notifications: true,
+    visibility: {
+      name: true,
+      institution: true,
+      dateIssued: true,
+    },
+    verificationDetails: {
+      verifiedBy: "University of Technology",
+      verifiedOn: "2021-07-01",
+      blockchainTx: "https://blockchain.com/tx/abc123",
+    },
   },
   {
     id: 2,
@@ -24,6 +34,12 @@ const initialCredentials = [
     blockchainUrl: "https://blockchain.com/tx/456",
     isPublic: true,
     notifications: true,
+    visibility: {
+      name: true,
+      institution: true,
+      dateIssued: true,
+    },
+    verificationDetails: null,
   },
   {
     id: 3,
@@ -35,6 +51,16 @@ const initialCredentials = [
     blockchainUrl: "https://blockchain.com/tx/789",
     isPublic: false,
     notifications: false,
+    visibility: {
+      name: true,
+      institution: true,
+      dateIssued: true,
+    },
+    verificationDetails: {
+      verifiedBy: "AI Certification Board",
+      verifiedOn: "2023-02-15",
+      blockchainTx: "https://blockchain.com/tx/def456",
+    },
   },
 ];
 
@@ -72,6 +98,34 @@ function LearnerDashboard() {
     );
   };
 
+  const toggleVisibility = (id, field) => {
+    setCredentials(
+      credentials.map((cred) => {
+        if (cred.id === id) {
+          return {
+            ...cred,
+            visibility: {
+              ...cred.visibility,
+              [field]: !cred.visibility[field],
+            },
+          };
+        }
+        return cred;
+      })
+    );
+  };
+
+  const revokeCredential = (id) => {
+    setCredentials(
+      credentials.map((cred) => {
+        if (cred.id === id) {
+          return { ...cred, isPublic: false };
+        }
+        return cred;
+      })
+    );
+  };
+
   const updateProfile = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
@@ -96,28 +150,78 @@ function LearnerDashboard() {
               <div className="mt-1 text-sm text-gray-900">
                 {credential.type}
               </div>
-              <div className="text-sm font-medium text-gray-500">Name</div>
-              <div className="mt-1 text-sm text-gray-900">
-                {credential.name}
+
+              {/* Privacy controls: Name visibility */}
+              <div className="text-sm font-medium text-gray-500 flex items-center">
+                Name
+                <button
+                  className="ml-2 text-sm text-blue-500"
+                  onClick={() => toggleVisibility(credential.id, "name")}
+                >
+                  {credential.visibility.name ? "Hide" : "Show"}
+                </button>
               </div>
-              <div className="text-sm font-medium text-gray-500">
+              {credential.visibility.name && (
+                <div className="mt-1 text-sm text-gray-900">
+                  {credential.name}
+                </div>
+              )}
+
+              {/* Privacy controls: Institution visibility */}
+              <div className="text-sm font-medium text-gray-500 flex items-center">
                 Issuing Institution
+                <button
+                  className="ml-2 text-sm text-blue-500"
+                  onClick={() => toggleVisibility(credential.id, "institution")}
+                >
+                  {credential.visibility.institution ? "Hide" : "Show"}
+                </button>
               </div>
-              <div className="mt-1 text-sm text-gray-900">
-                {credential.institution}
+              {credential.visibility.institution && (
+                <div className="mt-1 text-sm text-gray-900">
+                  {credential.institution}
+                </div>
+              )}
+
+              {/* Privacy controls: Date Issued visibility */}
+              <div className="text-sm font-medium text-gray-500 flex items-center">
+                Date Issued
+                <button
+                  className="ml-2 text-sm text-blue-500"
+                  onClick={() => toggleVisibility(credential.id, "dateIssued")}
+                >
+                  {credential.visibility.dateIssued ? "Hide" : "Show"}
+                </button>
               </div>
+              {credential.visibility.dateIssued && (
+                <div className="mt-1 text-sm text-gray-900">
+                  {credential.dateIssued}
+                </div>
+              )}
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-500">
-                Date Issued
-              </div>
-              <div className="mt-1 text-sm text-gray-900">
-                {credential.dateIssued}
-              </div>
               <div className="text-sm font-medium text-gray-500">Status</div>
               <div className="mt-1 text-sm text-gray-900">
                 {credential.status}
               </div>
+              {credential.verificationDetails && (
+                <div className="mt-1 text-sm text-gray-500">
+                  Verified by: {credential.verificationDetails.verifiedBy} on{" "}
+                  {credential.verificationDetails.verifiedOn}
+                  <a
+                    href={credential.verificationDetails.blockchainTx}
+                    className="block text-blue-500 hover:text-blue-700"
+                  >
+                    View Verification
+                  </a>
+                </div>
+              )}
+              <a
+                href={credential.blockchainUrl}
+                className="text-blue-500 hover:text-blue-700"
+              >
+                View Credential on Blockchain
+              </a>
             </div>
             <div className="flex flex-col space-y-2">
               {credential.isPublic && (
@@ -145,6 +249,14 @@ function LearnerDashboard() {
               >
                 {credential.isPublic ? "Private" : "Public"}
               </button>
+              {credential.isPublic && (
+                <button
+                  onClick={() => revokeCredential(credential.id)}
+                  className="px-4 py-2 bg-red-500 text-white rounded text-sm"
+                >
+                  Revoke Credential
+                </button>
+              )}
             </div>
           </div>
         ))}
