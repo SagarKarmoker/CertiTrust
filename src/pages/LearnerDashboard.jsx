@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import QRCode from "react-qr-code";
 
 // Mocked data for educational credentials and user profile
 const initialCredentials = [
@@ -77,7 +78,7 @@ function LearnerDashboard() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <h1 className="text-2xl font-semibold text-gray-900 my-6">
         Your Credentials
       </h1>
@@ -85,7 +86,7 @@ function LearnerDashboard() {
         {credentials.map((credential) => (
           <div
             key={credential.id}
-            className="px-4 py-5 sm:px-6 grid grid-cols-3 gap-x-4 border-t border-gray-200"
+            className="px-4 py-5 sm:px-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-gray-200"
           >
             {/* Credential Details */}
             <div>
@@ -95,30 +96,54 @@ function LearnerDashboard() {
               <div className="mt-1 text-sm text-gray-900">
                 {credential.type}
               </div>
+              <div className="text-sm font-medium text-gray-500">Name</div>
+              <div className="mt-1 text-sm text-gray-900">
+                {credential.name}
+              </div>
+              <div className="text-sm font-medium text-gray-500">
+                Issuing Institution
+              </div>
+              <div className="mt-1 text-sm text-gray-900">
+                {credential.institution}
+              </div>
             </div>
-            {/* Notification Toggle */}
             <div>
               <div className="text-sm font-medium text-gray-500">
-                Notifications
+                Date Issued
               </div>
+              <div className="mt-1 text-sm text-gray-900">
+                {credential.dateIssued}
+              </div>
+              <div className="text-sm font-medium text-gray-500">Status</div>
+              <div className="mt-1 text-sm text-gray-900">
+                {credential.status}
+              </div>
+            </div>
+            <div className="flex flex-col space-y-2">
+              {credential.isPublic && (
+                <QRCode value={credential.blockchainUrl} size={128} />
+              )}
               <button
                 onClick={() => toggleNotifications(credential.id)}
-                className={`mt-1 text-sm ${
-                  credential.notifications ? "text-green-600" : "text-red-600"
+                className={`px-4 py-2 rounded text-sm ${
+                  credential.notifications
+                    ? "bg-green-200 text-green-800"
+                    : "bg-red-200 text-red-800"
                 }`}
               >
-                {credential.notifications ? "On" : "Off"}
+                {credential.notifications
+                  ? "Notifications: On"
+                  : "Notifications: Off"}
               </button>
-            </div>
-            {/* Public/Private Toggle */}
-            <div>
               <button
                 onClick={() => togglePublic(credential.id)}
-                className={`text-sm ${
-                  credential.isPublic ? "text-red-600" : "text-green-600"
+                className={`px-4 py-2 rounded text-sm ${
+                  credential.isPublic
+                    ? "bg-red-200 text-red-800"
+                    : "bg-green-200 text-green-800"
                 }`}
               >
-                {credential.isPublic ? "Make Private" : "Share Publicly"}
+                {credential.isPublic ? "Private" : "Public"}
               </button>
             </div>
           </div>
@@ -129,37 +154,39 @@ function LearnerDashboard() {
           Profile Management
         </h2>
         <form>
-          <div className="mt-4">
-            <label
-              htmlFor="blockchainWallet"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Blockchain Wallet
-            </label>
-            <input
-              type="text"
-              name="blockchainWallet"
-              id="blockchainWallet"
-              value={profile.blockchainWallet}
-              onChange={updateProfile}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
-          </div>
-          <div className="mt-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              value={profile.email}
-              onChange={updateProfile}
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="blockchainWallet"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Blockchain Wallet
+              </label>
+              <input
+                type="text"
+                name="blockchainWallet"
+                id="blockchainWallet"
+                value={profile.blockchainWallet}
+                onChange={updateProfile}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                value={profile.email}
+                onChange={updateProfile}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              />
+            </div>
           </div>
         </form>
       </div>
