@@ -8,25 +8,14 @@ import IssuerDashboard from "./pages/IssuerDashboard";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import '@rainbow-me/rainbowkit/styles.css';
 import {
-  getDefaultConfig,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import { WagmiProvider } from 'wagmi';
 import {
-  baseSepolia
-} from 'wagmi/chains';
-import {
   QueryClientProvider,
   QueryClient,
 } from "@tanstack/react-query";
-
-
-const config = getDefaultConfig({
-  appName: 'CertiTrust',
-  projectId: '0e276d0f57e30fea190f8962759a6815',
-  chains: [baseSepolia],
-  ssr: true, // If your dApp uses server side rendering (SSR)
-});
+import config from "../config";
 
 const queryClient = new QueryClient();
 
