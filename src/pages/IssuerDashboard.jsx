@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Pie, Bar, Line } from "react-chartjs-2";
 import "chart.js/auto"; // Required for Chart.js v3
 import toast, { Toaster } from "react-hot-toast";
+import Upload from "../components/wallet/Upload";
 
 // Mock data for existing templates, institution details, credentials, stakeholders, and notifications
 const templates = [
@@ -204,6 +205,8 @@ function IssuerDashboard() {
 
   return (
     <div className="container mx-auto px-4">
+      {/* demo */}
+      <Upload />
       <Toaster position="top-center" />
       <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600 text-center my-6 py-3">
         Issuer Dashboard
